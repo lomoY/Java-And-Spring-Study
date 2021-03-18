@@ -2,6 +2,7 @@ package com.lomoy.javaandspring.springretry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,7 +55,7 @@ public class RetryController {
      * case 4: use retry template
      *
      */
-    @PostMapping(path = "retry5")
+    @GetMapping(path = "retry5")
     public void retryEndPoint5() throws Exception {
         retryService.callMockPost();
     }

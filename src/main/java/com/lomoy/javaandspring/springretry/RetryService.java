@@ -102,15 +102,12 @@ public class RetryService {
         ResponseEntity<String> responseEntity;
         try {
 //            responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            int count = 1;
-            retryTemplate.registerListener(fileNetRetryListener());
             responseEntity = retryTemplate.execute(context->callMockServer(context));
 
-        } catch (RestClientException e) {
-            System.out.println("Send file to filenet fail");
-            throw e;//last
+        } catch (Exception e) {
+            System.out.println("Throw excetpion");
+//            throw e;//last
         }
-        System.out.println(responseEntity);
     }
 
     private ResponseEntity<String> callMockServer(RetryContext context){
@@ -122,26 +119,4 @@ public class RetryService {
 
     }
 
-    private RetryListener fileNetRetryListener(){
-        RetryListener retryListener = new RetryListener() {
-            @Override
-            public <T, E extends Throwable> boolean open(RetryContext retryContext, RetryCallback<T, E> retryCallback) {
-                retryContext.setAttribute("eventName","fileNet");
-                System.out.println("---open----在第一次重试时调用"+retryContext.getAttribute("eventName"));
-                return true;
-            }
-
-            @Override
-            public <T, E extends Throwable> void close(RetryContext retryContext, RetryCallback<T, E> retryCallback, Throwable throwable) {
-                System.out.println("close----在最后一次重试后调用（无论成功与失败）。" + retryContext.getRetryCount());
-            }
-
-            @Override
-            public <T, E extends Throwable> void onError(RetryContext retryContext, RetryCallback<T, E> retryCallback, Throwable throwable) {
-                System.out.println("error----在每次调用异常时调用。" + retryContext.getRetryCount() +retryContext.getAttribute("eventName"));
-            }
-        };
-
-        return retryListener;
-    }
 }
